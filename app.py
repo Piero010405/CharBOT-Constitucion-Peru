@@ -85,57 +85,88 @@ st.set_page_config(
 )
 
 # =======================
-# ESTILOS CSS PERSONALIZADOS
+# ESTILOS CSS ADAPTATIVOS
 # =======================
 st.markdown("""
 <style>
-body {
-    background-color: #f9f9f9;
+:root {
+    --rojo-bandera: #b71c1c;
+    --rojo-claro: #fce4e4;
+    --rojo-oscuro: #7f0000;
+    --gris-suave: #f5f5f5;
 }
-[data-testid="stAppViewContainer"] {
-    background-color: #fffafc;
-}
-h1, h2, h3 {
-    color: #b71c1c;
+
+/* Adaptación automática según tema */
+html, body, [data-testid="stAppViewContainer"] {
+    background-color: var(--background-color);
+    color: var(--text-color);
     font-family: 'Merriweather', serif;
 }
-.chat-container {
-    border-radius: 10px;
-    padding: 15px;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(183, 28, 28, 0.1);
+
+h1, h2, h3 {
+    color: var(--rojo-bandera);
 }
-.bot-box {
-    background-color: #fff3f3;
-    border-left: 5px solid #b71c1c;
-    padding: 10px 15px;
-    border-radius: 5px;
-    margin-bottom: 10px;
-}
-.user-box {
-    background-color: #f1f1f1;
-    border-left: 5px solid #616161;
-    padding: 10px 15px;
-    border-radius: 5px;
-    margin-bottom: 10px;
-}
+
+/* Cuadro informativo */
 .info-box {
-    background-color: #ffebee;
-    border: 1px solid #b71c1c;
-    border-radius: 10px;
+    background-color: rgba(183, 28, 28, 0.1);
+    border: 1px solid var(--rojo-bandera);
+    border-radius: 12px;
     padding: 15px;
     margin-bottom: 25px;
 }
-footer {
-    visibility: hidden;
+
+/* Chat contenedor */
+.chat-container {
+    border-radius: 12px;
+    padding: 15px;
+    background-color: rgba(255,255,255,0.05);
+    box-shadow: 0 0 8px rgba(0,0,0,0.15);
 }
+
+/* Mensajes */
+.user-box, .bot-box {
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    line-height: 1.6;
+}
+
+.user-box {
+    background-color: rgba(100, 100, 100, 0.1);
+    border-left: 4px solid #616161;
+}
+
+.bot-box {
+    background-color: rgba(183, 28, 28, 0.1);
+    border-left: 4px solid var(--rojo-bandera);
+}
+
+/* Texto dentro del chat */
+.user-box b, .bot-box b {
+    color: var(--text-color);
+}
+
+/* Tema oscuro ajustes */
+[data-theme="dark"] .info-box {
+    background-color: rgba(183, 28, 28, 0.15);
+}
+[data-theme="dark"] .user-box {
+    background-color: rgba(255,255,255,0.05);
+}
+[data-theme="dark"] .bot-box {
+    background-color: rgba(183, 28, 28, 0.2);
+}
+[data-theme="dark"] h1, [data-theme="dark"] h2 {
+    color: #ff6b6b;
+}
+footer {visibility: hidden;}
 </style>
 """, unsafe_allow_html=True)
 
 # =======================
 # CABECERA
 # =======================
-st.image("https://upload.wikimedia.org/wikipedia/commons/9/99/Coat_of_arms_of_Peru.svg", width=100)
 st.title("📜 Asistente Constitucional del Perú")
 st.caption("Basado en la **Constitución Política del Perú (1993)**, con embeddings en MongoDB y respuestas generadas por **Gemini** 🇵🇪")
 
@@ -170,10 +201,8 @@ if pregunta:
         st.session_state.historial.append({"rol": "bot", "texto": respuesta})
 
 # Mostrar historial con estilo
-st.markdown("<div class='chat-container'>", unsafe_allow_html=True)
 for msg in st.session_state.historial:
     if msg["rol"] == "usuario":
         st.markdown(f"<div class='user-box'><b>👤 Tú:</b><br>{msg['texto']}</div>", unsafe_allow_html=True)
     else:
         st.markdown(f"<div class='bot-box'><b>🤖 Asistente Constitucional:</b><br>{msg['texto']}</div>", unsafe_allow_html=True)
-st.markdown("</div>", unsafe_allow_html=True)
